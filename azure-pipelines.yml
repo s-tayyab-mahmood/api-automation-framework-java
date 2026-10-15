@@ -1,0 +1,49 @@
+# Azure DevOps version of the CI pipeline
+trigger:
+  branches:
+    include: [main]
+
+schedules:
+  - cron: "0 3 * * 1-5"
+    displayName: Nightly regression
+    branches:
+      include: [main]
+    always: true
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: api-test-secrets   # defines AUTH_USERNAME / AUTH_PASSWORD
+  - name: MAVEN_OPTS
+    value: "-Dmaven.repo.local=$(Pipeline.Workspace)/.m2/repository"
+
+steps:
+  - task: Cache@2
+    inputs:
+      key: 'maven | "$(Agent.OS)" | pom.xml'
+      path: $(Pipeline.Workspace)/.m2/repository
+    displayName: Cache Maven repository
+
+  - task: Maven@4
+    displayName: Run API tests
+    inputs:
+      mavenPomFile: pom.xml
+      goals: test
+      options: -B
+      javaHomeOption: JDKVersion
+      jdkVersionOption: "1.17"
+      publishJUnitResults: true
+      testResultsFiles: "**/surefire-reports/TEST-*.xml"
+    env:
+      AUTH_USERNAME: $(AUTH_USERNAME)
+      AUTH_PASSWORD: $(AUTH_PASSWORD)
+
+  - script: mvn -B allure:report
+    displayName: Build Allure report
+    condition: always()
+
+  - publish: target/site/allure-maven-plugin
+    artifact: allure-report
+    displayName: Publish Allure report
+    condition: always()
