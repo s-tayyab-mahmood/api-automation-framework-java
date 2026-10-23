@@ -86,14 +86,14 @@ public class BookingSteps {
 
     @Then("retrieving the booking returns the same details")
     public void retrievingReturnsSameDetails() {
-        Booking fetched = bookingClient.getBooking(context.bookingId())
+        Booking fetched = bookingClient.getBooking(createdBookingId())
                 .then().statusCode(200).extract().as(Booking.class);
         assertThat(fetched).isEqualTo(context.booking());
     }
 
     @Then("the booking shows first name {string}")
     public void theBookingShowsFirstName(String expected) {
-        assertThat(bookingClient.getBooking(context.bookingId()).as(Booking.class).firstname())
+        assertThat(bookingClient.getBooking(createdBookingId()).as(Booking.class).firstname())
                 .isEqualTo(expected);
     }
 
@@ -104,11 +104,19 @@ public class BookingSteps {
 
     @Then("the booking still exists")
     public void theBookingStillExists() {
-        bookingClient.getBooking(context.bookingId()).then().statusCode(200);
+        bookingClient.getBooking(createdBookingId()).then().statusCode(200);
     }
 
     @Then("retrieving the booking returns status {int}")
     public void retrievingReturnsStatus(int status) {
-        bookingClient.getBooking(context.bookingId()).then().statusCode(status);
+        bookingClient.getBooking(createdBookingId()).then().statusCode(status);
+    }
+
+    private int createdBookingId() {
+        assertThat(context.bookingId())
+                .as("booking id - was the booking created? last status: %s",
+                        context.lastResponse() == null ? "none" : context.lastResponse().statusCode())
+                .isNotNull();
+        return context.bookingId();
     }
 }

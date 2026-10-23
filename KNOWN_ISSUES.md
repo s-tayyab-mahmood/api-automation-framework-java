@@ -14,3 +14,4 @@ The expected behaviour for each one is in `KnownDefectsTest` (tag `known-defect`
 | 5 | `DELETE` on an already-deleted booking | 405 | 404 | cleanup treats 405 as done |
 | 6 | `POST /booking` with checkout before checkin | 200, booking saved | 400 | `KnownDefectsTest` |
 | 7 | `POST /booking` with an invalid date string | 200, date saved as garbage | 400 | `KnownDefectsTest` |
+| 8 | Any request with an `Accept` header other than exactly `application/json` (e.g. REST Assured's default list) | 418 I'm a teapot | 406, or accept a list that includes JSON | `BaseApiClient` sends `Accept: application/json` |

@@ -21,7 +21,8 @@ public abstract class BaseApiClient {
     private static final RequestSpecification BASE_SPEC = new RequestSpecBuilder()
             .setBaseUri(ConfigManager.baseUrl())
             .setContentType(ContentType.JSON)
-            .setAccept(ContentType.JSON)
+            // must be exactly application/json - the API returns 418 for anything else
+            .setAccept("application/json")
             .setConfig(CONFIG)
             .addFilter(new AllureRestAssured())
             .log(LogDetail.URI)
