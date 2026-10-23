@@ -1,10 +1,12 @@
 package com.tayyabmahmood.api.tests;
 
+import com.tayyabmahmood.api.db.TestDataRepository;
 import com.tayyabmahmood.api.model.Booking;
 import com.tayyabmahmood.api.model.BookingDates;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Issue;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -34,8 +36,9 @@ class KnownDefectsTest extends BaseTest {
         Booking backwards = new Booking("Back", "Wards", 100, true,
                 new BookingDates("2030-05-10", "2030-05-01"), "None");
 
-        bookingClient.createBooking(backwards)
-                .then().statusCode(both(greaterThanOrEqualTo(400)).and(lessThan(500)));
+        Response response = bookingClient.createBooking(backwards);
+        cleanUpIfCreated(response, "Back", "Wards");
+        response.then().statusCode(both(greaterThanOrEqualTo(400)).and(lessThan(500)));
     }
 
     @Test
@@ -44,7 +47,15 @@ class KnownDefectsTest extends BaseTest {
         Booking badDate = new Booking("Bad", "Date", 100, true,
                 new BookingDates("not-a-date", "2030-05-01"), "None");
 
-        bookingClient.createBooking(badDate)
-                .then().statusCode(both(greaterThanOrEqualTo(400)).and(lessThan(500)));
+        Response response = bookingClient.createBooking(badDate);
+        cleanUpIfCreated(response, "Bad", "Date");
+        response.then().statusCode(both(greaterThanOrEqualTo(400)).and(lessThan(500)));
+    }
+
+    // While the bug is open the API saves these bookings, so track them for the end-of-run cleanup
+    private static void cleanUpIfCreated(Response response, String firstname, String lastname) {
+        if (response.statusCode() == 200) {
+            TestDataRepository.recordCreatedBooking(response.path("bookingid"), firstname, lastname);
+        }
     }
 }
