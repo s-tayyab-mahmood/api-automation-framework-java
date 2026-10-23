@@ -3,8 +3,6 @@ package com.tayyabmahmood.api.tests;
 import com.tayyabmahmood.api.db.TestDataRepository;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import io.qameta.allure.Issue;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,14 +32,6 @@ class BookingNegativeTest extends BaseTest {
 
         bookingClient.createBooking(incomplete)
                 .then().statusCode(both(greaterThanOrEqualTo(400)).and(lessThan(600)));
-    }
-
-    @Test
-    @Disabled("Known defect: missing required fields return 500 instead of 400 - see KNOWN_ISSUES.md")
-    @Issue("1")
-    void booking_with_missing_required_fields_returns_400() {
-        bookingClient.createBooking(Map.of("firstname", "OnlyAFirstName"))
-                .then().statusCode(400);
     }
 
     @Test

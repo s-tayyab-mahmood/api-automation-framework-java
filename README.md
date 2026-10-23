@@ -19,6 +19,7 @@ company code in here.
 - Data-driven tests from a database table (`GUESTS`)
 - A few BDD scenarios in Cucumber
 - Response time checks
+- Date handling: year-end and leap-day stays
 
 Every booking a test creates is logged in a `CREATED_BOOKINGS` table and deleted at the end of the run.
 
@@ -42,6 +43,7 @@ mvn test                                   # everything
 mvn test -Dgroups=smoke                    # smoke only
 mvn test -Dcucumber.filter.tags="@smoke"   # BDD smoke only
 mvn test -Dbase.url=https://other-env      # different environment
+mvn test -Dgroups=known-defect -Dexcluded.groups=none   # known bugs (these fail)
 mvn allure:serve                           # open the report
 ```
 

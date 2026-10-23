@@ -40,7 +40,7 @@ jobs:
           AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD || 'password123' }}
         run: |
           ARGS=""
-          if [ -n "${{ github.event.inputs.groups }}" ]; then ARGS="$ARGS -Dgroups=${{ github.event.inputs.groups }}"; fi
+          if [ -n "${{ github.event.inputs.groups }}" ]; then ARGS="$ARGS -Dgroups=${{ github.event.inputs.groups }} -Dexcluded.groups=none"; fi
           if [ -n "${{ github.event.inputs.cucumber_tags }}" ]; then ARGS="$ARGS -Dcucumber.filter.tags=${{ github.event.inputs.cucumber_tags }}"; fi
           mvn -B test $ARGS
 

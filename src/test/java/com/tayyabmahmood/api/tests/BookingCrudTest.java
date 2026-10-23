@@ -60,6 +60,17 @@ class BookingCrudTest extends BaseTest {
     }
 
     @Test
+    void booking_list_contains_new_booking() {
+        int id = createTrackedBooking(BookingFactory.randomBooking()).bookingid();
+
+        List<Integer> ids = bookingClient.getBookingIds()
+                .then().statusCode(200)
+                .extract().jsonPath().getList("bookingid", Integer.class);
+
+        assertThat(ids).contains(id).allMatch(i -> i > 0).doesNotHaveDuplicates();
+    }
+
+    @Test
     void booking_can_be_found_by_guest_name() {
         Booking booking = BookingFactory.randomBooking();
         int id = createTrackedBooking(booking).bookingid();
