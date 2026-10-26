@@ -1,6 +1,6 @@
 # api-automation-framework-java
 
-![API Tests](https://github.com/YOUR_GITHUB_USERNAME/api-automation-framework-java/actions/workflows/api-tests.yml/badge.svg)
+![API Tests](https://github.com/s-tayyab-mahmood/api-automation-framework-java/actions/workflows/api-tests.yml/badge.svg)
 
 API test framework in Java, tested against [restful-booker](https://restful-booker.herokuapp.com/apidoc/index.html)
 (a public practice API).
